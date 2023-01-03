@@ -1,4 +1,4 @@
-# Cumulocity - Node-RED flow management with thin-edge.io
+# Cumulocity - Manage Node-red flows with Cumulocity IoT and thin-edge.io
 
 This repository contains the required parts to 
 
@@ -11,12 +11,27 @@ This repository contains the required parts to
 
 Cumulocity IoT is a leading device management platform that provides a range of tools and services for managing IoT devices. It allows you to distribute your Node-RED flows across your edge devices and monitor them in real-time. You can also configure your devices remotely and access a wide range of analytics and reporting tools.
 
+# Edge computing
 
-# Node-Red
+Edge computing in the context of IoT refers to the processing and analysis of data from IoT devices at the edge of the network, rather than in a central cloud or data center. This allows for faster data processing and decision-making, as the data does not need to be transmitted over a network to a centralized location for processing.
 
-Node-RED is a visual programming tool that allows you to build and deploy IoT applications quickly and easily. It is particularly useful for edge computing, as it allows devices to process data locally and make real-time decisions. In that context Node-RED can be used to build flows that run on edge devices and process data locally. This can improve the performance and reliability of IoT systems, especially in situations where internet connectivity is limited.
+One way to implement edge computing in an IoT system is through the use of Node-red, an open-source programming tool. By using Node-red locally, data can be processed and analyzed at the edge of the network, enabling real-time decision-making and reducing the reliance on a central cloud or data center.
 
-# thin-edge.io
+Proper device management is essential in an IoT system that utilizes edge computing, as it ensures that the devices are functioning correctly and are able to transmit data to the edge for processing. This can be achieved through the use of tools such as device monitoring software, which alerts users to any issues with their devices and allows them to troubleshoot and fix problems in real-time.
+
+# Cumulocity IoT - The leading device managament platform
+
+Cumulocity IoT is a leading device management platform that provides a range of tools and services for managing IoT devices. It allows you to monitor your devices in real-time, configure them remotely, and access a wide range of analytics and reporting tools.
+
+With Cumulocity IoT, you can:
+
+* Monitor your devices in real-time and receive alerts when something goes wrong
+* Configure your devices remotely and apply updates or patches as needed
+* Use APIs and integrations to connect your devices to other platforms and systems
+* Benefit from a range of security features, including secure communication, authentication, and access control
+* Cumulocity IoT is designed to be scalable and flexible, whether you are managing a few hundred devices or a few million.
+
+# thin-edge.io - The open source framework
 
 thin-edge.io is a lightweight open source framework that is designed specifically for IoT devices. It is build to be fast, secure, and easy to use, making it a great choice for device management.
 
@@ -29,18 +44,9 @@ With thin-edge.io and Cumulocity IoT, you can:
 * Configure devices
 * Collect data locally and monitor them
 
-# Cumulocity IoT
+# Node-Red
 
-Cumulocity IoT is a leading device management platform that provides a range of tools and services for managing IoT devices. It allows you to monitor your devices in real-time, configure them remotely, and access a wide range of analytics and reporting tools.
-
-With Cumulocity IoT, you can:
-
-* Monitor your devices in real-time and receive alerts when something goes wrong
-* Configure your devices remotely and apply updates or patches as needed
-* Use APIs and integrations to connect your devices to other platforms and systems
-* Benefit from a range of security features, including secure communication, authentication, and access control
-* Cumulocity IoT is designed to be scalable and flexible, whether you are managing a few hundred devices or a few million.
-
+Node-RED is a visual programming tool that allows you to build and deploy IoT applications quickly and easily. It is particularly useful for edge computing, as it allows devices to process data locally and make real-time decisions. In that context Node-RED can be used to build flows that run on edge devices and process data locally. This can improve the performance and reliability of IoT systems, especially in situations where internet connectivity is limited.
 
 # HowTo
 
@@ -221,11 +227,29 @@ Select the binaries and wait until it is uploaded.
 After succesful upload go to "All Applications" and click on "Add Application". Select "Duplicate existing application"
 and afterwards "Device Management".
 
-![](images/Duplicate-app.png)
+<br/><br/>
+<p style="text-indent:30px;">
+  <a>
+  <center>
+    <img width="50%" src="images/duplicate_app.png">
+  </center>
+  </a>
+</p>
+<br/>
+
+
 
 Now select the cloned Device Management App and go to the "Plugin" Tab. Click on "Install Plugin" and select "node-red-management plugin"
 
-![](images/Plugin-installed.png)
+<br/><br/>
+<p style="text-indent:30px;">
+  <a>
+  <center>
+    <img width="70%" src="images/plugin_installed.png">
+  </center>
+  </a>
+</p>
+<br/>
 
 
 ### thin-edge.io
@@ -310,7 +334,7 @@ You device within Cumulocity should look similar to this afterwards:
 
 ### SmartRest template
 
-SmartRest is a csv format that converts RestAPI interactions on Cumulocity IoT to a comma speparated payload on mqtt.
+SmartRest is a csv format that converts RestAPI interactions on Cumulocity IoT to a comma separated payload on mqtt.
 
 <br/><br/>
 <p style="text-indent:30px;">
@@ -325,6 +349,9 @@ SmartRest is a csv format that converts RestAPI interactions on Cumulocity IoT t
 Find more to SmartRest in the [documentation](https://cumulocity.com/guides/reference/smartrest-two/).
 There is also a SmartRest template (node-red.json) here in this repository that can easily be imported.
 
+# Limitations
+
+Currently there is no monitoring of the edge sided events in the Cumulocity IoT platform. In a next steps the repository parts will be extended thus one can monitor what's happening on the local device side via the debug node within node-red. There is also currently no logic implemented for custom installed nodes. These need to be installed either manually or via configuration management of Cumulocity IoT.
 
 # Copyright
 
