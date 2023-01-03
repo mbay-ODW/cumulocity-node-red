@@ -11,8 +11,6 @@ This repository contains the required parts to
 
 Cumulocity IoT is a leading device management platform that provides a range of tools and services for managing IoT devices. It allows you to distribute your Node-RED flows across your edge devices and monitor them in real-time. You can also configure your devices remotely and access a wide range of analytics and reporting tools.
 
-# Content
-
 
 # Node-Red
 
@@ -42,7 +40,6 @@ With Cumulocity IoT, you can:
 * Use APIs and integrations to connect your devices to other platforms and systems
 * Benefit from a range of security features, including secure communication, authentication, and access control
 * Cumulocity IoT is designed to be scalable and flexible, whether you are managing a few hundred devices or a few million.
-
 
 
 # Installation
@@ -107,12 +104,11 @@ Refering to the backend/frontend implementation you can find all content, packag
 
 https://github.com/SoftwareAG/cumulocity-node-red
 
-## Node-red flow management
+## Node-red devicemanagement plugin
 
 You need to install the plugin for the device management application to your Cumulocity IoT Tenant:
 
-
-The plugin is provided as binaries in [Releases](https://github.com/SoftwareAG/url/releases).
+The plugin is provided as binaries in [Releases](https://github.com/SoftwareAG/url/releases) or in the "node-red-devicemanagement-plugin" directory.
 
 To install the plugin go to the Administration App -> Ecosystem -> Packages and click on "Add Application" on the top right.
 
@@ -131,16 +127,205 @@ and afterwards "Device Management".
 Now select the cloned Device Management App and go to the "Plugin" Tab. Click on "Install Plugin" and select "node-red-management plugin"
 
 ![](images/Plugin-installed.png)
-## thin-edge.io plugin
 
 
 ### thin-edge.io
 
+To install thin-edge.io locally on a device just follow the following tutorial:
+
+https://thin-edge.github.io/thin-edge.io/html/tutorials/getting-started.html#Step-1-Install-thin-edge.io
+
+
+The basic steps are:
+
+1. Get thin-edge.io installation script
+ ```bash
+ curl -fsSL https://raw.githubusercontent.com/thin-edge/thin-edge.io/main/get-thin-edge_io.sh | sudo sh -s
+```
+
+2. Config tenant url
+
+```bash
+sudo tedge config set c8y.url {{YOUR_C8Y_URL}}
+```
+
+3. Create/Upload Certificate
+
+```bash
+sudo tedge cert create --device-id {{YOUR_UNIQUE_DEVICE_ID}}
+```
+
+4. Connect
+
+```bash
+sudo tedge connect c8y
+```
+
+## thin-edge.io plugin
+
+To inject node-red flows via operation from Cumulocity IoT the operation plugin concept is used. The tedge_agent is checking for specific operations and is triggering the particular plugin. Therefore the plugin needs to be proper installed.
+
+### Requirements
+
+- Working thin-edge.io installation
+
+- Python3 and pip3 installation (will not work on python2)
 
 ### node-red thin-edge.io plugin
 
+1. Clone the content of the directory "node-red-devicemanagement-plugin on the thin-edge.io device
+2. run sudo -H pip3 install -r requirements.txt from that directory
+3. Copy c8y_NodeRed to the following directory "/etc/tedge/operations/c8y/"
+4. Copy c8y_NodeRed.py to the following directory "/bin/"
+5. Make sure, that both files do have permissions for beeing executed by tedge_mapper ("chmod 644 c8y_NodeRed and chmod 555 c8y_NodeRed.py")
+
+If installation is done properly according to the steps above, you have to disconnect and reconnect thin-edge.io. In that way the suppoerted Operations will be updated.
+
+```shell
+sudo tedge disconnect c8y
+```
+
+and
+
+```shell
+sudo tedge connect c8y
+```
+
+However it would also to be sufficient to restart the tedge_mapper service via e.g.:
+
+```shell
+sudo systemctl tedge_mapper restart
+```
+
+You device within Cumulocity should look similar to this afterwards:
+
+
+<br/><br/>
+<p style="text-indent:30px;">
+  <a>
+  <center>
+    <img width="70%" src="images/dm.png">
+  </center>
+  </a>
+</p>
+<br/>
+
 ### SmartRest template
 
+SmartRest is a csv format that converts RestAPI interactions on Cumulocity IoT to a comma speparated payload on mqtt.
+
+<br/><br/>
+<p style="text-indent:30px;">
+  <a>
+  <center>
+    <img width="70%" src="images/smartrest.png">
+  </center>
+  </a>
+</p>
+<br/>
+
+Find more to SmartRest in the [documentation](https://cumulocity.com/guides/reference/smartrest-two/).
+There is also a SmartRest template (node-red.json) here in this repository that can easily be imported.
+
+
+
+# HowTo
+
+To use this repo after installation of all components there is the following workflow:
+
+```mermaid
+sequenceDiagram
+    actor Bob
+    participant A as Cumulocity IoT
+    participant B as thin-edge.io
+    participant C as Local Node-red
+    Activate A
+    Bob ->> A: Create/Save a flow in Node-Red
+    A -->> Bob: Response
+    Deactivate A
+    Activate A
+    Bob ->> A: Pick device in the device list
+    A -->> Bob: Response
+    Deactivate A
+    Activate A
+    Bob ->> A: Pick a flow in the flow list
+    A -->> Bob: Response
+    Deactivate A
+    Bob ->> A: Send flow to device
+    A ->> B: Operation "NodeRed" is send to device
+    B -->> A: Operation Executing
+    Activate C
+    B ->> C: Send flow to local Node-red runtime
+    Note over B,C: Check for load,update or remove
+    C -->> B: Response
+    Deactivate C
+    B ->> A: Operation Successfull
+    A -->> Bob: Response
+```
+
+## Create flow
+
+First of all a flow needs to be defined within Cumulocity IoT Node-red. Make sure the flow is deployed to the platform side node-red runtime.
+
+<br/><br/>
+<p style="text-indent:30px;">
+  <a>
+  <center>
+    <img width="70%" src="images/node-red.png">
+  </center>
+  </a>
+</p>
+<br/>
+
+## Pick Device
+
+A device that has properly installed the thin-edge.io node-red plugin shows the Node-Red tab.
+
+<br/><br/>
+<p style="text-indent:30px;">
+  <a>
+  <center>
+    <img width="70%" src="images/overview_flow.png">
+  </center>
+  </a>
+</p>
+<br/>
+
+In that tab you can select a flow that should be send to the device.
+
+<br/><br/>
+<p style="text-indent:30px;">
+  <a>
+  <center>
+    <img width="70%" src="images/pick_flow.png">
+  </center>
+  </a>
+</p>
+<br/>
+
+In case that the flow was already send and was just updated/adjusted on platform side it will already appear in the list and can be updated via the context menu.
+
+<br/><br/>
+<p style="text-indent:30px;">
+  <a>
+  <center>
+    <img width="70%" src="images/update_flow.png">
+  </center>
+  </a>
+</p>
+<br/>
+
+The operation that is created contains the flow in base64 encoded. The thin-edge.io plugin handles the data according to the operation type such as e.g. remove, create or update.
+
+<br/><br/>
+<p style="text-indent:30px;">
+  <a>
+  <center>
+    <img width="70%" src="images/operation.png">
+  </center>
+  </a>
+</p>
+<br/>
 
 
 
