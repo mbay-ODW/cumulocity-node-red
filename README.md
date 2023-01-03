@@ -42,6 +42,105 @@ With Cumulocity IoT, you can:
 * Cumulocity IoT is designed to be scalable and flexible, whether you are managing a few hundred devices or a few million.
 
 
+# HowTo
+
+To use this repo after installation of all components there is the following workflow:
+
+```mermaid
+sequenceDiagram
+    actor Bob
+    participant A as Cumulocity IoT
+    participant B as thin-edge.io
+    participant C as Local Node-red
+    Activate A
+    Bob ->> A: Create/Save a flow in Node-Red
+    A -->> Bob: Response
+    Deactivate A
+    Activate A
+    Bob ->> A: Pick device in the device list
+    A -->> Bob: Response
+    Deactivate A
+    Activate A
+    Bob ->> A: Pick a flow in the flow list
+    A -->> Bob: Response
+    Deactivate A
+    Bob ->> A: Send flow to device
+    A ->> B: Operation "NodeRed" is send to device
+    B -->> A: Operation Executing
+    Activate C
+    B ->> C: Send flow to local Node-red runtime
+    Note over B,C: Check for load,update or remove
+    C -->> B: Response
+    Deactivate C
+    B ->> A: Operation Successfull
+    A -->> Bob: Response
+```
+
+## Create flow
+
+First of all a flow needs to be defined within Cumulocity IoT Node-red. Make sure the flow is deployed to the platform side node-red runtime.
+
+<br/><br/>
+<p style="text-indent:30px;">
+  <a>
+  <center>
+    <img width="70%" src="images/node-red.png">
+  </center>
+  </a>
+</p>
+<br/>
+
+## Pick Device
+
+A device that has properly installed the thin-edge.io node-red plugin shows the Node-Red tab.
+
+<br/><br/>
+<p style="text-indent:30px;">
+  <a>
+  <center>
+    <img width="70%" src="images/overview_flow.png">
+  </center>
+  </a>
+</p>
+<br/>
+
+In that tab you can select a flow that should be send to the device.
+
+<br/><br/>
+<p style="text-indent:30px;">
+  <a>
+  <center>
+    <img width="70%" src="images/pick_flow.png">
+  </center>
+  </a>
+</p>
+<br/>
+
+In case that the flow was already send and was just updated/adjusted on platform side it will already appear in the list and can be updated via the context menu.
+
+<br/><br/>
+<p style="text-indent:30px;">
+  <a>
+  <center>
+    <img width="70%" src="images/update_flow.png">
+  </center>
+  </a>
+</p>
+<br/>
+
+The operation that is created contains the flow in base64 encoded. The thin-edge.io plugin handles the data according to the operation type such as e.g. remove, create or update.
+
+<br/><br/>
+<p style="text-indent:30px;">
+  <a>
+  <center>
+    <img width="70%" src="images/operation.png">
+  </center>
+  </a>
+</p>
+<br/>
+
+
 # Installation
 
 This repository consists of several parts that need to be up an running:
@@ -226,107 +325,6 @@ SmartRest is a csv format that converts RestAPI interactions on Cumulocity IoT t
 
 Find more to SmartRest in the [documentation](https://cumulocity.com/guides/reference/smartrest-two/).
 There is also a SmartRest template (node-red.json) here in this repository that can easily be imported.
-
-
-
-# HowTo
-
-To use this repo after installation of all components there is the following workflow:
-
-```mermaid
-sequenceDiagram
-    actor Bob
-    participant A as Cumulocity IoT
-    participant B as thin-edge.io
-    participant C as Local Node-red
-    Activate A
-    Bob ->> A: Create/Save a flow in Node-Red
-    A -->> Bob: Response
-    Deactivate A
-    Activate A
-    Bob ->> A: Pick device in the device list
-    A -->> Bob: Response
-    Deactivate A
-    Activate A
-    Bob ->> A: Pick a flow in the flow list
-    A -->> Bob: Response
-    Deactivate A
-    Bob ->> A: Send flow to device
-    A ->> B: Operation "NodeRed" is send to device
-    B -->> A: Operation Executing
-    Activate C
-    B ->> C: Send flow to local Node-red runtime
-    Note over B,C: Check for load,update or remove
-    C -->> B: Response
-    Deactivate C
-    B ->> A: Operation Successfull
-    A -->> Bob: Response
-```
-
-## Create flow
-
-First of all a flow needs to be defined within Cumulocity IoT Node-red. Make sure the flow is deployed to the platform side node-red runtime.
-
-<br/><br/>
-<p style="text-indent:30px;">
-  <a>
-  <center>
-    <img width="70%" src="images/node-red.png">
-  </center>
-  </a>
-</p>
-<br/>
-
-## Pick Device
-
-A device that has properly installed the thin-edge.io node-red plugin shows the Node-Red tab.
-
-<br/><br/>
-<p style="text-indent:30px;">
-  <a>
-  <center>
-    <img width="70%" src="images/overview_flow.png">
-  </center>
-  </a>
-</p>
-<br/>
-
-In that tab you can select a flow that should be send to the device.
-
-<br/><br/>
-<p style="text-indent:30px;">
-  <a>
-  <center>
-    <img width="70%" src="images/pick_flow.png">
-  </center>
-  </a>
-</p>
-<br/>
-
-In case that the flow was already send and was just updated/adjusted on platform side it will already appear in the list and can be updated via the context menu.
-
-<br/><br/>
-<p style="text-indent:30px;">
-  <a>
-  <center>
-    <img width="70%" src="images/update_flow.png">
-  </center>
-  </a>
-</p>
-<br/>
-
-The operation that is created contains the flow in base64 encoded. The thin-edge.io plugin handles the data according to the operation type such as e.g. remove, create or update.
-
-<br/><br/>
-<p style="text-indent:30px;">
-  <a>
-  <center>
-    <img width="70%" src="images/operation.png">
-  </center>
-  </a>
-</p>
-<br/>
-
 
 
 
