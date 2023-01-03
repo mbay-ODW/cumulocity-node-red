@@ -15,6 +15,7 @@ class Connector(object):
     def __init__(self, url):
         logger.debug("Constructor called")
         self.url = url
+        logging.debug(f'Using the following url: {url}')
         self.headers = {}
         self.payload = {}
 
